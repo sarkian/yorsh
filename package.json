@@ -1,0 +1,6 @@
+{
+    "name": "yorsh",
+    "version": "0.0.1",
+    "private": false,
+    "browserify": {"transform": ["coffeeify"]}
+}

@@ -1,0 +1,73 @@
+Promise = require 'bluebird'
+uri = require 'lil-uri'
+
+{BaseApiMethod, BaseApi} = require '../base/api'
+{YError, tryUnpackError} = require './errors'
+{Validator} = require './validate'
+
+
+prefix = '/api'
+
+
+buildParams = (params = {}) ->
+    Object.keys(params).map((k) ->
+        k + '=' + encodeURIComponent(params[k])
+    ).join('&')
+
+    
+request = (method, url, params) ->
+    params = buildParams(params)
+    xhr = new XMLHttpRequest()
+    new Promise((resolve, reject) ->
+        xhr.addEventListener('error', reject)
+        xhr.addEventListener('load', resolve)
+        if method == 'POST'
+            xhr.open(method, url, true)
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            xhr.send(params)
+        else
+            xhr.open(method, uri(url).search(params).build(), true)
+            xhr.send(null)
+    ).then(-> xhr.responseText)
+    .cancellable().catch(Promise.CancellationError, (e) ->
+        xhr.abort()
+        throw e
+    )
+
+
+class ApiMethod extends BaseApiMethod
+    
+    httpMethod: 'get'
+    
+    constructor: (@name, @params, @httpMethod) ->
+    
+    call: (params, v = true) ->
+        Promise.resolve(if v then @validateAll(params) else params).then((params) =>
+            request(@httpMethod, "#{prefix}/#{@name}", params)
+            .then(JSON.parse).then((res) ->
+                if res.success
+                    res.data
+                else
+                    throw res.error
+            ).catch((err) ->
+                yerr = tryUnpackError(err)
+                if !yerr
+                    console.error?(err)
+                throw yerr || new YError('Application error')
+            )
+        )
+        
+
+
+class Api extends BaseApi
+    
+    init: (@methods, prefix_) ->
+        prefix = prefix_
+        Validator.api = @
+        @init = null
+        
+    
+    
+module.exports = new Api()
+module.exports.ApiMethod = ApiMethod
+
