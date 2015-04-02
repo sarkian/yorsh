@@ -31,7 +31,7 @@ router.setView = (view, params = {}) ->
 
     
 router.go = (view, params = {}) ->
-#    router.setView(view, params)
+    router.setView(view, params)
     process.domain.res.redirect(router.url(view, params))
     
     
@@ -44,9 +44,10 @@ router.isActive = (view, params = {}) ->
 
     
 router.react = (path, name, component, method = 'get', before = ->) ->
+    before = Promise.method(before)
     router[method](path, name, (req, res) ->
         params = extend(req[httpMethods[method]], req.params)
-        Promise.method(before)(req, res, params).then((ret) ->
+        before(req, res, params).then((ret) ->
             if !res._headerSent
                 if typeof ret == 'object'
                     params = ret

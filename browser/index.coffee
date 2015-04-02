@@ -1,6 +1,6 @@
 api = require './api'
 router = require './router'
-#state = require './state'
+state = require './state'
 {YError, ParamError, AccessError} = require './errors'
 {Validator} = require './validate'
 
@@ -18,5 +18,5 @@ module.exports =
     # common
     api: api
     router: router
-#    state: state
+    state: state
     

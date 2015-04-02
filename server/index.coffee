@@ -1,6 +1,6 @@
 api = require './api'
 router = require './router'
-#state = require './state'
+state = require './state'
 config = require './config'
 {YError, ParamError, AccessError} = require './errors'
 {Validator} = require './validate'
@@ -19,7 +19,7 @@ module.exports =
     # common
     api: api
     router: router
-#    state: state
+    state: state
     
     # server
     loadConfig: (conf) ->  config.load(@config = conf); @loadConfig = null
@@ -31,4 +31,7 @@ module.exports =
     
     db: null
     models: null
+    
+    
+module.exports.__defineGetter__('session', -> process.domain.req.session)
     

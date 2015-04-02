@@ -6,6 +6,7 @@ extend = require 'node.extend'
 router = require './router'
 transform = require './transform'
 prod = require './prod'
+State = require './state'
 
 
 Object.defineProperty(global, 'document',
@@ -46,7 +47,7 @@ module.exports.reactRender = (opts_) ->
         global.document? or global.document = {}
         router.setView(view, params)
         component = React.renderToString(React.createElement(cmp, params))
-        initialData = JSON.stringify({rootTagId: opts.rootTagId, view, params})
+        initialData = JSON.stringify({rootTagId: opts.rootTagId, view, params, state: State.getInitial()})
         @res.render(opts.template, {component, initialData, title: document?.title || ''})
     reactView = (view, params, opts) ->
         cmp = router.component(view)

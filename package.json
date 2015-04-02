@@ -1,6 +1,23 @@
 {
-    "name": "yorsh",
-    "version": "0.0.1",
-    "private": false,
-    "browserify": {"transform": ["coffeeify"]}
+  "name": "yorsh",
+  "version": "0.0.1",
+  "private": false,
+  "browserify": {
+    "transform": [
+      "coffeeify"
+    ]
+  },
+  "dependencies": {
+    "bluebird": "",
+    "browserify-middleware": "",
+    "browserify-transform-tools": "",
+    "coffee-script": "",
+    "express": "",
+    "lil-uri": "",
+    "named-routes": "",
+    "node.extend": "",
+    "react": "",
+    "react-tools": "",
+    "validator": ""
+  }
 }

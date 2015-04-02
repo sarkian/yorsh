@@ -1,4 +1,5 @@
 React = require 'react'
+Promise = require 'bluebird'
 
 {namedRoutes, buildUrl, compareParams} = require '../base/router'
 
@@ -20,8 +21,10 @@ router =
         history.replaceState(@getState(), '', location.pathname + location.search)
         
     go: (@view, @params = {}) ->
-        @render()
-        history.pushState(@getState(), '', @url(@view, @params))
+        @before(@view)().then(=>
+            @render()
+            history.pushState(@getState(), '', @url(@view, @params))
+        )
         
     bindGo: (view, params) ->
         => @go view, params
@@ -41,19 +44,23 @@ router =
         @render()
     
     url: buildUrl
+    
+    before: (name, method = 'get') ->
+        namedRoutes.routesByNameAndMethod[name][method].before
         
     component: (name, params = {}, method = 'get') ->
         React.createElement(namedRoutes.routesByNameAndMethod[name][method].component, params)
 
-    react: (path, name, component, method = 'get') ->
+    react: (path, name, component, method = 'get', before = ->) ->
         namedRoutes.add(method, path, null, {name})
+        namedRoutes.routesByNameAndMethod[name][method].before = Promise.method(before)
         namedRoutes.routesByNameAndMethod[name][method].component = component
         
-    reactGet: (path, name, component) ->
-        @react(path, name, component, 'get')
+    reactGet: (path, name, component, before) ->
+        @react(path, name, component, 'get', before)
 
-    reactPost: (path, name, component) ->
-        @react(path, name, component 'post')
+    reactPost: (path, name, component, before) ->
+        @react(path, name, component 'post', before)
         
 
 module.exports = router

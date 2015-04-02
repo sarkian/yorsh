@@ -10,7 +10,8 @@ api = require './api'
 options = module.exports.options =
     jsx:
         harmony: false
-    coffee: {}
+    coffee:
+        bare: true
     jsxExtensions: ['.jsx', '.js']
     coffeeExtensions: ['.coffee']
     jsxInCoffee: true

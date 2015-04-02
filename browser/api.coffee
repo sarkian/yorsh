@@ -4,6 +4,7 @@ uri = require 'lil-uri'
 {BaseApiMethod, BaseApi} = require '../base/api'
 {YError, tryUnpackError} = require './errors'
 {Validator} = require './validate'
+State = require './state'
 
 
 prefix = '/api'
@@ -26,7 +27,9 @@ request = (method, url, params) ->
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xhr.send(params)
         else
-            xhr.open(method, uri(url).search(params).build(), true)
+            url = uri(url)
+            url.search(params)
+            xhr.open(method, url.build(), true)
             xhr.send(null)
     ).then(-> xhr.responseText)
     .cancellable().catch(Promise.CancellationError, (e) ->
@@ -46,7 +49,8 @@ class ApiMethod extends BaseApiMethod
             request(@httpMethod, "#{prefix}/#{@name}", params)
             .then(JSON.parse).then((res) ->
                 if res.success
-                    res.data
+                    State.set(res.state)
+                    return res.data
                 else
                     throw res.error
             ).catch((err) ->

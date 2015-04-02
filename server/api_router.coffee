@@ -1,5 +1,6 @@
 {YError, packError} = require './errors'
 router = require('express').Router()
+State = require './state'
 
 
 httpMethods = require './methods'
@@ -11,7 +12,7 @@ Object.keys(httpMethods).forEach((httpMethod) ->
     router[httpMethod] = (method) ->
         fn('/' + method.name, (req, res) ->
             method.call(req[store]).then((data) ->
-                res.send({ success: true, data: data })
+                res.send({ success: true, data: data, state: State.getChanged() })
             ).catch(YError, (err) ->
                 res.send({ success: false, error: packError(err) })
             ).catch((err) ->
