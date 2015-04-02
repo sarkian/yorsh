@@ -12,7 +12,7 @@ options = module.exports.options =
         harmony: false
     coffee:
         bare: true
-    jsxExtensions: ['.jsx', '.js']
+    jsxExtensions: ['.jsx']
     coffeeExtensions: ['.coffee']
     jsxInCoffee: true
     
