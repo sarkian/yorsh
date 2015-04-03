@@ -39,6 +39,16 @@ class BaseValidator
 
     @alphanum: (msg) ->
         new @(((val) -> @v.isAlphanumeric(val)), [], msg)
+        
+    @email: (options, msg) ->
+        if msg == undefined
+            msg = options
+            options = {}
+        fn = (val, options) -> @v.isEmail(val, options)
+        new @(fn, [options], msg)
+        
+    @phone: (locale, msg) ->
+        new @(((val) -> @v.isMobilePhone()), [locale], msg)
 
     @len: (min, max, msg) ->
         if typeof max != 'number' && not msg?
@@ -53,6 +63,11 @@ class BaseValidator
     @in: (values, msg) ->
         fn = (val, values) -> @v.isIn(val, values)
         new @(fn, [values], msg)
+        
+    @regex: (regex, msg) ->
+        regex = regex.toString()
+        fn = (val, expr, flags) -> new RegExp(expr, flags).test(val)
+        new @(fn, [regex.replace(/^\/|\/[a-zA-Z]*$/g, ''), /[a-zA-Z]*$/.exec(regex)[0]], msg)
 
     @custom: (fn, msg) ->
         new @(fn, [], msg)

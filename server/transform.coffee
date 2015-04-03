@@ -1,6 +1,12 @@
-React = require 'react-tools'
-CoffeeScript = require 'coffee-script'
 transformTools = require 'browserify-transform-tools'
+
+React = null
+try
+    React = require 'react-tools'
+
+CoffeeScript = null
+try
+    CoffeeScript = require 'coffee-script'
 
 config = require('./config')
 api = require './api'
@@ -18,6 +24,8 @@ options = module.exports.options =
     
     
 compileJsx = module.exports.compileJsx = (src, filename) ->
+    if !React
+        throw new Error('React is not installed. Please run `npm install react-tools`.')
     filename?.length? > 0 or filename = '<code>'
     try
         React.transform(src, options.jsx)
@@ -26,6 +34,8 @@ compileJsx = module.exports.compileJsx = (src, filename) ->
         
         
 compileCoffee = module.exports.compileCoffee = (src, filename) ->
+    if !CoffeeScript
+        throw new Error('CoffeeScript is not installed. Please run `npm install coffee-script`.')
     filename?.length? > 0 or filename = '<code>'
     try
         CoffeeScript.compile(src, options.coffee)
@@ -83,8 +93,9 @@ browserify = module.exports.browserify =
     
     
     
-module.exports.browserify.all = -> [
-    browserify.coffee()
-    browserify.jsx()
-    browserify.require()
-]
+module.exports.browserify.all = (more = []) ->
+    [
+        browserify.coffee()
+        browserify.jsx()
+        browserify.require()
+    ].concat(more)
