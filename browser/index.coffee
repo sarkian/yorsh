@@ -1,6 +1,7 @@
 api = require './api'
 router = require './router'
 state = require './state'
+init = require './init'
 {YError, ParamError, AccessError} = require './errors'
 {Validator} = require './validate'
 
@@ -19,4 +20,7 @@ module.exports =
     api: api
     router: router
     state: state
+    
+    # browser
+    init: init
     

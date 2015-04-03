@@ -4,7 +4,6 @@
   "private": false,
   "browserify": {
     "transform": [
-      "coffeeify"
     ]
   },
   "dependencies": {

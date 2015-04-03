@@ -57,4 +57,3 @@ module.exports.reactRender = (opts_) ->
         res.reactView = reactView.bind({req, res})
         next()
         
-        

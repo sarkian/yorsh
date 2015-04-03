@@ -28,6 +28,7 @@ module.exports =
     transform: require './transform'
     require: require './require'
     middleware: require './middleware'
+    api_router: require './api_router'
     
     db: null
     models: null
