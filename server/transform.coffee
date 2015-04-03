@@ -53,7 +53,9 @@ browserify = module.exports.browserify =
             'yorshRequireTransform',
             {evaluateArguments: true},
             (args, opts, cb) ->
-                if !/^yorsh(\/|$)/.test(args[0]) || /^yorsh\/browser(\/|$)/.test(args[0])
+                if !/^yorsh(\/|$)/.test(args[0]) ||
+                            /^yorsh\/browser(\/|$)/.test(args[0]) ||
+                            /^yorsh\/components(\/|$)/.test(args[0])
                     return cb()
                 rs = "require('#{args[0].replace(/^yorsh/, 'yorsh/browser')}')"
                 if !api._browserInited #|| api._browserInited == opts.file
