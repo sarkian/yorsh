@@ -28,6 +28,8 @@ class BaseApiMethod
         , null).then(-> pval)
         
     validator: (pname) ->
+        if !(@params[pname] instanceof Array)
+            throw new Error("Undefined API method parameter: #{@name}:#{pname}")
         (pval) => @validateParam pname, pval
     
 
@@ -35,7 +37,10 @@ class BaseApi
 
     methods: {}
     
-    method: (name) -> @methods[name]
+    method: (name) ->
+        if !(@methods[name] instanceof BaseApiMethod)
+            throw new Error("Undefined API method: #{name}")
+        @methods[name]
         
     call: (name, params, validate = true) ->
         @method(name).call(params, validate)
