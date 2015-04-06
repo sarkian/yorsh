@@ -27,7 +27,7 @@ class BaseValidator
         )
         
     getMsg: (pname) ->
-        @_msg?(pname) ? @_msg
+        if typeof @_msg == 'function' then @_msg.call(@constructor, pname) else @_msg
         
         
     # Context

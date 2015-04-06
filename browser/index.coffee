@@ -20,6 +20,7 @@ module.exports =
     api: api
     router: router
     state: state
+    i18n: null
     
     # browser
     init: init

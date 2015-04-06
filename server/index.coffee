@@ -22,7 +22,7 @@ module.exports =
     state: state
     
     # server
-    loadConfig: (conf) ->  config.load(@config = conf); @loadConfig = null
+    loadConfig: (conf) -> config.load(@config = conf); @loadConfig = null
     config: config.config
     prod: require './prod'
     transform: require './transform'
@@ -35,4 +35,6 @@ module.exports =
     
     
 module.exports.__defineGetter__('session', -> process.domain.req.session)
+
+module.exports.__defineGetter__('i18n', -> process.domain.req.i18n)
     
