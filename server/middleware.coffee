@@ -57,13 +57,14 @@ module.exports.reactRender = (opts_) ->
             view: view
             params: params
             state: State.getInitial()
+            locale: @req.locale
             localeData: @req.localeData
         initialDataJson = JSON.stringify(initialData)
         @res.render(opts.template, {
             component: component
             initialData: initialDataJson
             title: document?.title || ''
-            lang: @req.lang
+            locale: @req.locale
         })
         
     reactView = (view, params, opts) ->
@@ -99,12 +100,18 @@ module.exports.i18n = (locales, options) ->
     supported = new locale.Locales(locales)
     
     (req, res, next) ->
+        
+        req.setLocale = (lc) ->
+            locales.indexOf(lc) != -1 or lc = options.defaultLocale
+            req.locale = lc
+            req.localeData = i18n[lc].data
+            req.i18n = i18n[lc].lib
+            res.cookie(options.cookieName, lc, options.cookie)
+        
         lc = req.cookies[options.cookieName]
         if(!lc || locales.indexOf(lc) == -1)
             reqLocales = new locale.Locales(req.headers['accept-language'])
             lc = reqLocales.best(supported)
-        res.cookie(options.cookieName, lc, options.cookie)
-        req.locale = lc
-        req.localeData = i18n[lc].data
-        req.i18n = i18n[lc].lib
+        req.setLocale(lc)
+        
         next()

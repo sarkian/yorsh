@@ -17,13 +17,15 @@ router =
         window.addEventListener('popstate', (e) =>
             @setState(e.state)
         )
-#        history.replaceState(@getState(), '', @url(@view, @params))
         history.replaceState(@getState(), '', location.pathname + location.search)
+        
+    getCurrentUrl: () ->
+        location.pathname + location.search
         
     go: (@view, @params = {}) ->
         @before(@view)().then(=>
-            @render()
             history.pushState(@getState(), '', @url(@view, @params))
+            @render()
         )
         
     bindGo: (view, params) ->

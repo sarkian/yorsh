@@ -36,5 +36,7 @@ module.exports =
     
 module.exports.__defineGetter__('session', -> process.domain.req.session)
 
+module.exports.__defineGetter__('locale', -> process.domain.req.locale)
+
 module.exports.__defineGetter__('i18n', -> process.domain.req.i18n)
     

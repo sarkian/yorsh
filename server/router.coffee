@@ -23,6 +23,9 @@ getDRouter = ->
     process.domain.router
     
     
+router.getCurrentUrl = () ->
+    process.domain.req.path
+    
     
 router.setView = (view, params = {}) ->
     dRouter = getDRouter()
