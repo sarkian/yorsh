@@ -65,7 +65,7 @@ class ApiMethod extends BaseApiMethod
 
 class Api extends BaseApi
     
-    init: (@methods, prefix_) ->
+    init: (@_methods, prefix_) ->
         prefix = prefix_
         Validator.api = @
         @init = null

@@ -40,12 +40,12 @@ class BaseApi
     _cache: Object.create(null)
     
     method: (name) ->
-        if !(@methods[name] instanceof BaseApiMethod)
+        if !(@_methods[name] instanceof BaseApiMethod)
             throw new Error("Undefined API method: #{name}")
-        @methods[name]
+        @_methods[name]
         
     call: (name, params, validate = true) ->
-        @method(name).call(params, validate)
+        @_method(name).call(params, validate)
         
     cache: (key, name, params, validate) ->
         if key of @_cache
