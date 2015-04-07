@@ -45,7 +45,7 @@ class BaseApi
         @_methods[name]
         
     call: (name, params, validate = true) ->
-        @_method(name).call(params, validate)
+        @method(name).call(params, validate)
         
     cache: (key, name, params, validate) ->
         if key of @_cache
