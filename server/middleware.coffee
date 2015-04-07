@@ -101,12 +101,13 @@ module.exports.i18n = (locales, options) ->
     
     (req, res, next) ->
         
-        req.setLocale = (lc) ->
-            locales.indexOf(lc) != -1 or lc = options.defaultLocale
+        req.setLocale = (lc, setCookie = true) ->
+            (lc && locales.indexOf(lc) != -1) or lc = options.defaultLocale
             req.locale = lc
             req.localeData = i18n[lc].data
             req.i18n = i18n[lc].lib
-            res.cookie(options.cookieName, lc, options.cookie)
+            if setCookie
+                res.cookie(options.cookieName, lc, options.cookie)
         
         lc = req.cookies[options.cookieName]
         if(!lc || locales.indexOf(lc) == -1)

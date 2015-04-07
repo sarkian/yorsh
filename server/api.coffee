@@ -43,7 +43,7 @@ class Api extends BaseApi
     
     getRoutedMethods: ->
         methods = {}
-        for own name, method of @methods
+        for own name, method of @_methods
             if method.httpMethod
                 methods[name] = method
         methods
@@ -52,7 +52,7 @@ class Api extends BaseApi
         if arguments.length is 2
             fn = params
             params = {}
-        @methods[name] = new ApiMethod(name, params, fn)
+        @_methods[name] = new ApiMethod(name, params, fn)
 
         
         

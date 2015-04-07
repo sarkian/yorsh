@@ -1,7 +1,7 @@
 React = require 'react'
 Promise = require 'bluebird'
 
-{namedRoutes, buildUrl, compareParams} = require '../base/router'
+{namedRoutes, buildUrl} = require '../base/router'
 
 
 router =
@@ -32,7 +32,7 @@ router =
         => @go view, params
         
     isActive: (view, params = {}) ->
-        view == @view # && compareParams(params, @params)
+        view == @view
         
     render: ->
         React.render(@component(@view, @params), @root)

@@ -8,7 +8,8 @@ class BaseApiMethod
     validateAll: (args = {}) ->
         Promise.reduce(Object.keys(@params), (values, pname) =>
             @validateParam(pname, args[pname]).then (pval) ->
-                values[pname] = pval;
+                if pval != undefined
+                    values[pname] = pval;
                 values
         , {})
 
@@ -23,7 +24,7 @@ class BaseApiMethod
         Promise.reduce(@params[pname], (_, handler) ->
             if handler instanceof BaseValidator
                 handler.validate(pname, pval)
-            else
+            else if typeof handler == 'function'
                 pval = handler(pval)
         , null).then(-> pval)
         
@@ -35,7 +36,8 @@ class BaseApiMethod
 
 class BaseApi
 
-    methods: {}
+    _methods: Object.create(null)
+    _cache: Object.create(null)
     
     method: (name) ->
         if !(@methods[name] instanceof BaseApiMethod)
@@ -45,6 +47,10 @@ class BaseApi
     call: (name, params, validate = true) ->
         @method(name).call(params, validate)
         
+    cache: (key, name, params, validate) ->
+        if key of @_cache
+            return Promise.resolve(@_cache[key])
+        @call(name, params, validate).then((res) => @_cache[key] = res)
 
 
 module.exports =

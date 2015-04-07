@@ -2,7 +2,7 @@ Promise = require 'bluebird'
 express = require 'express'
 extend = require 'node.extend'
 
-{namedRoutes, buildUrl, compareParams} = require '../base/router'
+{namedRoutes, buildUrl} = require '../base/router'
 
 httpMethods = require './methods'
 
@@ -43,7 +43,7 @@ router.bindGo = ->
 
 router.isActive = (view, params = {}) ->
     dRouter = getDRouter()
-    view == dRouter.view # && compareParams(params, dRouter.params)
+    view == dRouter.view
 
     
 router.react = (path, name, component, method = 'get', before = ->) ->
