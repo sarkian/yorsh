@@ -10,32 +10,30 @@ router =
     view: null
     params: {}
     
+            
+            
+    
     init: (rootTagId, @view, @params) ->
         @root = document.getElementById(rootTagId)
         if @view
-            @render()
+            @render(@view, @params)
         window.addEventListener('popstate', (e) =>
             @setState(e.state)
+            
         )
         history.replaceState(@getState(), '', location.pathname + location.search)
         
-    getCurrentUrl: () ->
-        location.pathname + location.search
-        
     go: (@view, @params = {}) ->
-        @before(@view)().then(=>
+        params = Object.create(@params)
+        @before(@view)(null, null, params).then((ret) =>
+            if typeof ret == 'object'
+                params = ret
             history.pushState(@getState(), '', @url(@view, @params))
-            @render()
+            @render(@view, params)
         )
         
-    bindGo: (view, params) ->
-        => @go view, params
-        
-    isActive: (view, params = {}) ->
-        view == @view
-        
-    render: ->
-        React.render(@component(@view, @params), @root)
+    render: (view, params) ->
+        React.render(@component(view, params), @root)
         
     getState: ->
         view: @view
@@ -43,8 +41,20 @@ router =
         
     setState: (state) ->
         {@view, @params} = state
-        @render()
-    
+        @render(@view, @params)
+
+
+
+
+    isActive: (view, params = {}) ->
+        view == @view
+        
+    bindGo: (view, params) ->
+        => @go view, params
+
+    getCurrentUrl: () ->
+        location.pathname + location.search
+        
     url: buildUrl
     
     before: (name, method = 'get') ->
