@@ -10,6 +10,8 @@ router =
     view: null
     params: {}
     
+    _renderId: 0
+    
     init: (rootTagId, @view, @params) ->
         @root = document.getElementById(rootTagId)
         window.addEventListener('popstate', (e) =>
@@ -26,10 +28,12 @@ router =
         
     renderBefore: (view, params) ->
         params = Object.create(params)
+        renderId = ++@_renderId
         @before(view)(null, null, params).then((ret) =>
-            if typeof ret == 'object'
-                params = ret
-            @render(view, params)
+            if renderId == @_renderId
+                if typeof ret == 'object'
+                    params = ret
+                @render(view, params)
         )
         
     render: (view, params) ->
