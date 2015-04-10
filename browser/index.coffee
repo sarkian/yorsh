@@ -3,7 +3,7 @@ router = require './router'
 state = require './state'
 init = require './init'
 {YError, ParamError, AccessError} = require './errors'
-{Validator} = require './validate'
+{Validator, ValidationContext} = require './validate'
 
 module.exports =
     
@@ -15,6 +15,7 @@ module.exports =
     AccessError: AccessError
     ApiMethod: api.ApiMethod
     Validator: Validator
+    ValidationContext: ValidationContext
     
     # common
     api: api

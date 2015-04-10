@@ -1,38 +1,43 @@
 Promise = require 'bluebird'
+validatorLib = require 'validator'
 
 {ParamError} = require './errors'
 
 
 class BaseValidator
     
-    _fn: (pval) -> true
+    _fn: null
+    _fnMethod: null
     _args: []
     _msg: (pname) -> "Invalid parameter: #{pname}"
     _shared: false
         
     constructor: (fn, args, msg) ->
-        if fn? then @_fn = fn
-        if args? then @_args = args
-        if msg? then @_msg = msg
+        @_fn = fn
+        @_fnMethod = Promise.method(fn)
+        @_args = args
+        @_msg = msg
     
     msg: (@_msg) -> @
     fn: (@_fn) -> @
     shared: (@_shared = true) -> @
         
-    validate: (pname, pval) ->
-        Promise.method(@_fn).apply(@constructor, [pval].concat(@_args)).then((res) =>
+    validate: (pname, pval, context) ->
+        context or context = new ValidationContext()
+        @_fnMethod.apply(context, [pval].concat(@_args)).then((res) =>
             if res != true
-                throw new ParamError(@getMsg(pname), pname, pval)
+                throw new ParamError(@getMsg(pname, context), pname, pval)
             true
         )
         
-    getMsg: (pname) ->
-        if typeof @_msg == 'function' then @_msg.call(@constructor, pname) else @_msg
+    validateDirect: (pname, pval, context) ->
+        context or context = new ValidationContext()
+        @_fn.apply(context, [pval].concat(@_args))
+        
+    getMsg: (pname, context) ->
+        if typeof @_msg == 'function' then @_msg.call(context, pname) else @_msg
         
         
-    # Context
-        
-    @v: require 'validator'
 
     @required: (msg = (n) -> "Required parameter: #{n}") ->
         new @(((val) -> val? and val isnt ''), [], msg)
@@ -76,6 +81,20 @@ class BaseValidator
         new @(fn, args, msg)
         
         
+        
+class ValidationContext
+    
+    v: validatorLib
+    api: null
+    allParams: {}
+    
+    constructor: (props) ->
+        if !props
+            return
+        {@allParams} = props
+        
+        
 
 module.exports =
     BaseValidator: BaseValidator
+    ValidationContext: ValidationContext

@@ -1,4 +1,4 @@
-{BaseValidator} = require '../base/validate'
+{BaseValidator, ValidationContext} = require '../base/validate'
 
 
 class Validator extends BaseValidator
@@ -11,4 +11,4 @@ class Validator extends BaseValidator
 module.exports =
     BaseValidator: BaseValidator
     Validator: Validator
-
+    ValidationContext: ValidationContext

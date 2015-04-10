@@ -1,4 +1,4 @@
-{BaseValidator} = require '../base/validate'
+{BaseValidator, ValidationContext} = require '../base/validate'
 
 
 class Validator extends BaseValidator
@@ -19,11 +19,12 @@ class Validator extends BaseValidator
 
 # Context getters
 
-Object.defineProperty(Validator, 'api', get: -> require './api')
+#Object.defineProperty(Validator, 'api', get: -> require './api')
 
+ValidationContext.prototype.__defineGetter__('api', -> require './api')
 
         
 module.exports =
     BaseValidator: BaseValidator
     Validator: Validator
-
+    ValidationContext: ValidationContext

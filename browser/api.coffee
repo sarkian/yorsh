@@ -3,7 +3,7 @@ uri = require 'lil-uri'
 
 {BaseApiMethod, BaseApi} = require '../base/api'
 {YError, tryUnpackError} = require './errors'
-{Validator} = require './validate'
+{Validator, ValidationContext} = require './validate'
 State = require './state'
 
 
@@ -67,7 +67,8 @@ class Api extends BaseApi
     
     init: (@_methods, prefix_) ->
         prefix = prefix_
-        Validator.api = @
+#        Validator.api = @
+        ValidationContext.prototype.api = @
         @init = null
         
     

@@ -1,29 +1,34 @@
 Promise = require 'bluebird'
 
-{BaseValidator} = require './validate'
+{BaseValidator, ValidationContext} = require './validate'
 
     
 class BaseApiMethod
 
-    validateAll: (args = {}) ->
+    validateAll: (args = {}, context) ->
+        context or context = new ValidationContext({allParams: args})
         Promise.reduce(Object.keys(@params), (values, pname) =>
-            @validateParam(pname, args[pname]).then (pval) ->
+            @validateParam(pname, args[pname], context).then (pval) ->
                 if pval != undefined
                     values[pname] = pval;
                 values
         , {})
 
-    validate: (args = {}) ->
+    validate: (args = {}, context) ->
+        context or context = new ValidationContext({allParams: args})
         Promise.reduce(Object.keys(args).filter((pname) => @params[pname]?), (values, pname) =>
-            @validateParam(pname, args[pname]).then (pval) ->
+            @validateParam(pname, args[pname], context).then (pval) ->
                 values[pname] = pval;
                 values
         , {})
 
-    validateParam: (pname, pval) ->
+    validateParam: (pname, pval, context) ->
+#        context instanceof ValidationContext or context = new ValidationContext()
+        if !(context instanceof ValidationContext)
+            context = new ValidationContext({allParams: context})
         Promise.reduce(@params[pname], (_, handler) ->
             if handler instanceof BaseValidator
-                handler.validate(pname, pval)
+                handler.validate(pname, pval, context)
             else if typeof handler == 'function'
                 pval = handler(pval)
         , null).then(-> pval)
@@ -31,7 +36,7 @@ class BaseApiMethod
     validator: (pname) ->
         if !(@params[pname] instanceof Array)
             throw new Error("Undefined API method parameter: #{@name}:#{pname}")
-        (pval) => @validateParam pname, pval
+        (pval, allParams) => @validateParam(pname, pval, new ValidationContext({allParams}))
     
 
 class BaseApi
