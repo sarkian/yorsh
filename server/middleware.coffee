@@ -14,7 +14,7 @@ State = require './state'
 
 
 Object.defineProperty(global, 'document',
-    get: -> process.domain.document
+    get: -> if process.domain then process.domain.document else undefined
     set: (d) -> process.domain.document = d
 )
 
